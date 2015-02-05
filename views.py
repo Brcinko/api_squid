@@ -30,6 +30,8 @@ def acl_rule(request, aclrules_id):
     response = "You're looking at the results of acl rule %s."
     return HttpResponse(response % aclrules_id)
 
+# Check if urls.py works
+
 
 def skuska(request):
     return HttpResponse("SKUSKA.")
