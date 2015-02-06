@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 
 from api_squid.models import AclRules
-# Create your views here.
-
 from api_squid.serializers import AclRulesSerializer
 
 
@@ -12,32 +13,61 @@ def index(request):
     return HttpResponse("This is a index web page of squid API.")
 
 
-def rules_list(request):
-    acl_rules_list = AclRules.objects.all()
-    # output = ', '.join([p.aclrules for p in acl_rules_list])
-    # tmp = AclRules()
-    acl_list = ""
-    for rule in acl_rules_list:
-        acl_list += str(rule.id) + " "
-        acl_list += str(rule.acl_type) + " "
-        acl_list += str(rule.acl_values) + " "
-        acl_list += str(rule.acl_name)
-        acl_list += "\n"
-    return HttpResponse(acl_list)
+# def acl_rule(request, aclrules_id):
+#     response = "You're looking at the results of acl rule %s."
+#     return HttpResponse(response % aclrules_id)
 
 
-def acl_rule(request, aclrules_id):
-    response = "You're looking at the results of acl rule %s."
-    return HttpResponse(response % aclrules_id)
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
-# Check if urls.py works
+
+@csrf_exempt
+def acl_rules_list(request):
+    """
+    List all code acl-rules, or create a new acl-rule.
+    """
+    if request.method == 'GET':
+        rules = AclRules.objects.all()
+        serializer = AclRulesSerializer(rules, many=True)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AclRulesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
 
 
-def skuska(request):
-    return HttpResponse("SKUSKA.")
+def acl_rule_detail(request, pk):
+    """
+    Detail of specific acl-rule
+    """
+    try:
+        rule = AclRules.objects.get(pk=pk)
+    except AclRules.DoesNotExist:
+        return HttpResponse(status=404)
 
+    if request.method == 'GET':
+        serializer = AclRulesSerializer(rule)
+        return JSONResponse(serializer.data)
 
-class AclRulesViewSet(viewsets.ModelViewSet):
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = AclRulesSerializer(snippet, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status=400)
 
-    queryset = AclRules.objects.all()
-    serializer_class = AclRulesSerializer
+    elif request.method == 'DELETE':
+        snippet.delete()
+        return HttpResponse(status=204)
