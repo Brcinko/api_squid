@@ -46,7 +46,7 @@ def acl_rules_list(request):
             return JSONResponse(serializer.data, status=201)
         return JSONResponse(serializer.errors, status=400)
 
-
+@csrf_exempt
 def acl_rule_detail(request, pk):
     """
     Detail of specific acl-rule
@@ -71,3 +71,21 @@ def acl_rule_detail(request, pk):
     elif request.method == 'DELETE':
         snippet.delete()
         return HttpResponse(status=204)
+
+# @csrf_exempt
+# def acl_list(request):
+#     """
+#     List all acl-lists, or create a new acl-list.
+#     """
+#     if request.method == 'GET':
+#         acl_lists = AclList.objects.all()
+#         serializer = AclListSerializer(acl_lists, many=True)
+#         return JSONResponse(serializer.data)
+#
+#     elif request.method == 'POST':
+#         data = JSONParser().parse(request)
+#         serializer = AclListSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JSONResponse(serializer.data, status=201)
+#         return JSONResponse(serializer.errors, status=400)
