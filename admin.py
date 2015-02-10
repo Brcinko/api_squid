@@ -4,7 +4,7 @@ from api_squid.models import AclRule, AclList
 
 
 class AclListAdmin(admin.ModelAdmin):
-    fields = ('deny_value', 'acl_rules', 'id')
+    fields = ('deny_value', 'acl_rules', 'list_type', 'id')
 
 admin.site.register(AclRule)
 admin.site.register(AclList, AclListAdmin)

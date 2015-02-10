@@ -15,6 +15,7 @@ class AclRule(models.Model):
 class AclList(models.Model):
     id = models.IntegerField(primary_key=True)
     deny_value = models.BooleanField(default=True)
+    list_type = models.CharField(max_length=200, default='http_access')
 #    acl_rules = models.ManyToManyField(AclRule, through='AccessPattern', through_fields=('acl_rules', 'acl_list'))
     acl_rules = models.ManyToManyField(AclRule)
 

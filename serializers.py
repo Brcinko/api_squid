@@ -13,4 +13,4 @@ class AclListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AclList
-        fields = ('id', 'acl_rules', 'deny_value')
+        fields = ('id', 'acl_rules', 'deny_value', 'list_type')
