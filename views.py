@@ -5,17 +5,17 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
-from api_squid.models import AclRules
-from api_squid.serializers import AclRulesSerializer
+from api_squid.models import AclRule, AclList
+from api_squid.serializers import AclRuleSerializer, AclListSerializer
 
 
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
 
 
-# def acl_rule(request, aclrules_id):
+# def acl_rule(request, aclrule_id):
 #     response = "You're looking at the results of acl rule %s."
-#     return HttpResponse(response % aclrules_id)
+#     return HttpResponse(response % aclrule_id)
 
 
 class JSONResponse(HttpResponse):
@@ -34,13 +34,13 @@ def acl_rules_list(request):
     List all code acl-rules, or create a new acl-rule.
     """
     if request.method == 'GET':
-        rules = AclRules.objects.all()
-        serializer = AclRulesSerializer(rules, many=True)
+        rules = AclRule.objects.all()
+        serializer = AclRuleSerializer(rules, many=True)
         return JSONResponse(serializer.data)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = AclRulesSerializer(data=data)
+        serializer = AclRuleSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data, status=201)
@@ -52,17 +52,17 @@ def acl_rule_detail(request, pk):
     Detail of specific acl-rule
     """
     try:
-        rule = AclRules.objects.get(pk=pk)
-    except AclRules.DoesNotExist:
+        rule = AclRule.objects.get(pk=pk)
+    except AclRule.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'GET':
-        serializer = AclRulesSerializer(rule)
+        serializer = AclRuleSerializer(rule)
         return JSONResponse(serializer.data)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = AclRulesSerializer(snippet, data=data)
+        serializer = AclRuleSerializer(snippet, data=data)
         if serializer.is_valid():
             serializer.save()
             return JSONResponse(serializer.data)
@@ -72,20 +72,44 @@ def acl_rule_detail(request, pk):
         snippet.delete()
         return HttpResponse(status=204)
 
-# @csrf_exempt
-# def acl_list(request):
-#     """
-#     List all acl-lists, or create a new acl-list.
-#     """
-#     if request.method == 'GET':
-#         acl_lists = AclList.objects.all()
-#         serializer = AclListSerializer(acl_lists, many=True)
-#         return JSONResponse(serializer.data)
-#
-#     elif request.method == 'POST':
-#         data = JSONParser().parse(request)
-#         serializer = AclListSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JSONResponse(serializer.data, status=201)
-#         return JSONResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def acl_list(request):
+    """
+    List all acl-lists, or create a new acl-list.
+    """
+    if request.method == 'GET':
+        acl_lists = AclList.objects.all()
+        serializer = AclListSerializer(acl_lists, many=True)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AclListSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+
+@csrf_exempt
+def acl_list_detail(request, pk):
+    """
+    Detailed view of one access pattern
+    """
+    try:
+        pattern = AclList.objects.get(pk=pk)
+    except AclRule.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = AclRuleSerializer(pattern)
+        return JSONResponse(serializer.data)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AclListSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+
