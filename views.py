@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from api_squid.models import AclRule, AclList
 from api_squid.serializers import AclRuleSerializer, AclListSerializer
+from api_squid.helpers import update_config_rules
 
 
 def index(request):
@@ -30,6 +31,8 @@ def index(request):
 def acl_rules_list(request):
     """
     List of all acl-rules, or create a new acl-rule.
+    acl_values have to be in this json form:
+
     """
     if request.method == 'GET':
         rules = AclRule.objects.all()
@@ -41,8 +44,10 @@ def acl_rules_list(request):
         serializer = AclRuleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
-        return JSONResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            # update config and reconfigure squid
+            # update_config_rules()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -65,12 +70,14 @@ def acl_rule_detail(request, pk):
         serializer = AclRuleSerializer(rule, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            # update config and reconfigure squid
+            # update_config_rules()
             return Response(serializer.data)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         rule.delete()
-        return HttpResponse(status=HTTP_204_NO_CONTENT)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
 
 @csrf_exempt
@@ -90,7 +97,7 @@ def acl_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -110,11 +117,11 @@ def acl_list_detail(request, pk):
 
     elif request.method == 'PUT':
         # data = JSONParser().parse(request)
-        serializer = AclRuleSerializer(rule, data=request.data)
+        serializer = AclRuleSerializer(pattern, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         pattern.delete()
