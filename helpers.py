@@ -78,7 +78,7 @@ def update_config_list():
         list_id = row[0]
         for r in rows:
             if list_id == r[0]:
-                help_string += r[8] + " "
+                help_string += r[10] + " "
         pattern.append(help_string)
 
     unique_string = ""
