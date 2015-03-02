@@ -7,7 +7,17 @@ import json
 
 """
 This code update squids configuration file
-TODO update_config_list() for acl_list
+"""
+"""
+example of JSON in aclrule.values:
+
+{"values":[
+   "192.168.0.0/24",
+   "127.0.0.0/24"
+]
+}
+
+EVERY RECORD IN DATABASE HAVE TO BE IN THIS FORM!
 """
 
 columns = (
@@ -39,7 +49,7 @@ def update_config_rules():
             j = json.loads(jsonstring)
             for v in j["values"]:
                 if row['acl_name'] == name:
-                    data += row['acl_name'] + " " + row['acl_type'] + " "
+                    data += "acl " + row['acl_name'] + " " + row['acl_type'] + " "
                     data += v + "\n"
         results = []
 
@@ -49,8 +59,40 @@ def update_config_rules():
     # f.close()
 
 
+def update_config_list():
+    cursor = database_connect()
+    # TODO try catch block
+    cursor.execute('SELECT * FROM api_squid_acllist '
+                   'JOIN api_squid_acllist_acl_rules ON api_squid_acllist.id = api_squid_acllist_acl_rules.acllist_id '
+                   'JOIN api_squid_aclrule ON api_squid_acllist_acl_rules.aclrule_id = api_squid_aclrule.id '
+                   )
+    rows = cursor.fetchall()
+    pattern = []
+
+    for row in rows:
+        help_string = "http_access "
+        if row[2] is True:
+            help_string += "deny "
+        else:
+            help_string += "allow "
+        list_id = row[0]
+        for r in rows:
+            if list_id == r[0]:
+                help_string += r[8] + " "
+        pattern.append(help_string)
+
+    unique_string = ""
+    checked = []
+    for e in pattern:
+        if e not in checked:
+            checked.append(e)
+            unique_string += e + "\n"
+    print unique_string
+
+
 def main():
     update_config_rules()
+    update_config_list()
 
 
 if __name__ == "__main__":

@@ -44,8 +44,6 @@ def acl_rules_list(request):
         serializer = AclRuleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # update config and reconfigure squid
-            # update_config_rules()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,8 +68,6 @@ def acl_rule_detail(request, pk):
         serializer = AclRuleSerializer(rule, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # update config and reconfigure squid
-            # update_config_rules()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
