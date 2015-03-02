@@ -4,9 +4,10 @@ import os
 import psycopg2
 import psycopg2.extras
 import json
+import fileinput
 
 """
-This code update squids configuration file
+This file contains method to update a reconfigure squid proxy server
 """
 """
 example of JSON in aclrule.values:
@@ -90,8 +91,14 @@ def update_config_list():
     print unique_string
 
 
+def generate_file(flag, data, inputfile):
+    pass
+    # TODO input under specific line in configuration file
+
+
 def main():
-    update_config_rules()
+    rules = update_config_rules()
+    generate_file("# INSERT RULES", rules, '/home/brcinko/squid.conf')
     update_config_list()
 
 

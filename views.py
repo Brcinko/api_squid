@@ -9,22 +9,11 @@ from rest_framework.response import Response
 
 from api_squid.models import AclRule, AclList
 from api_squid.serializers import AclRuleSerializer, AclListSerializer
-from api_squid.helpers import update_config_rules
+from api_squid.helpers import update_config_rules, update_config_list, generate_file
 
 
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
-
-#
-# class JSONResponse(HttpResponse):
-#     """
-#     An HttpResponse that renders its content into JSON.
-#     """
-#     def __init__(self, data, **kwargs):
-#         content = JSONRenderer().render(data)
-#         kwargs['content_type'] = 'application/json'
-#         super(JSONResponse, self).__init__(content, **kwargs)
-
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -122,6 +111,17 @@ def acl_list_detail(request, pk):
     elif request.method == 'DELETE':
         pattern.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+
+def update_config(request):
+    if request.method == 'GET':  # TODO method will be PUT?
+        rules = update_config_rules()
+        patterns = update_config_list()
+        # Update acl rules declarations
+        generate_file("# INSERT RULES", rules, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        # Update acl list patterns
+        generate_file("# INSERT PATTERNS", patterns, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse("Done. I want print squid.conf here")
 
 
 
