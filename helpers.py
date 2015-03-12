@@ -54,7 +54,7 @@ def update_config_rules():
                     data += v + "\n"
         results = []
 
-    print data
+    return data
     # f = open('squid.conf', w)
     # f.write(update)
     # f.close()
@@ -88,18 +88,34 @@ def update_config_list():
         if e not in checked:
             checked.append(e)
             unique_string += e + "\n"
-    print unique_string
+    return unique_string
 
 
-def generate_file(flag, data, inputfile):
+def generate_file(flag_patterns, flag_rules, data_rules, data_patterns, inputfile):
     pass
-    # TODO input under specific line in configuration file
+    # Make tmp file with acl rules
+    os.remove('/home/brcinko/squid_done.conf')
+    with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:
+        with open(inputfile, "rt") as fin:
+            for line in fin:
+                fout.write(line.replace(flag_rules, data_rules))
+                # fout.write(line.replace(flag_patterns, data_patterns))
+    # Add acl patterns to http_access
+    with open("/home/brcinko/squid_done.conf.tmp2", "wt") as fout:
+        with open("/home/brcinko/squid_done.conf.tmp1", "rt") as fin:
+            for line in fin:
+                # fout.write(line.replace(flag_rules, data_rules))
+                fout.write(line.replace(flag_patterns, data_patterns))
+    # TODO add acl of authentification and configuration of auth
+
+    os.remove("/home/brcinko/squid_done.conf.tmp1")
 
 
 def main():
+
     rules = update_config_rules()
-    generate_file("# INSERT RULES", rules, '/home/brcinko/squid.conf')
-    update_config_list()
+    patterns = update_config_list()
+    generate_file("# INSERT PATTERNS #", "# INSERT RULES #", rules, patterns, '/home/brcinko/squid.conf')
 
 
 if __name__ == "__main__":

@@ -118,10 +118,8 @@ def update_config(request):
         rules = update_config_rules()
         patterns = update_config_list()
         # Update acl rules declarations
-        generate_file("# INSERT RULES", rules, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        # Update acl list patterns
-        generate_file("# INSERT PATTERNS", patterns, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse("Done. I want print squid.conf here")
+        generate_file("# INSERT PATTERNS #", "# INSERT RULES #", rules, patterns, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse("Done.")
 
 
 
