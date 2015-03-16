@@ -30,21 +30,24 @@ class AclList(models.Model):
     acl_rules = models.ManyToManyField(AclRule)
 
 
-class Authentication(models.Model):
+class AuthenticationDB(models.Model):
     # user database settings
     # explanation of this settings can be found at http://www.squid-cache.org/Versions/v3/3.2/manuals/basic_db_auth.html
-    username_column = models.CharField(default="username")
-    password_column = models.CharField(default="password")
-    database_name = models.CharField(default="squid")
-    user = models.CharField()  # database account
-    password = models.CharField()  # database account
-    table = models.CharField(default="users")
-    encryption = models.CharField(default="plaintext")  # password encryption in db, only plaintext or md5
+    username_column = models.CharField(default="username", max_length=200, null=True)
+    password_column = models.CharField(default="password", max_length=200, null=True)
+    database_name = models.CharField(default="squid", max_length=200, null=True)
+    user = models.CharField(max_length=200)  # database account
+    password = models.CharField(max_length=200)  # database account
+    table = models.CharField(default="users", max_length=200, null=True)
+    encryption = models.CharField(default="plaintext", max_length=200, null=True)  # password encryption in db only plaintext or md5
+
+
+class Authentication(models.Model):
     # squid auth settings
     # explanation of this settings can be found at http://www.squid-cache.org/Doc/config/auth_param/
-    realm = models.CharField()
-    children = models.IntegerField(default=5)
-    program = models.CharField(default="")
+    realm = models.CharField(max_length=200, default="Squid Authentication", null=True)
+    children = models.IntegerField(default=5, null=True)
+    program = models.CharField(default="", max_length=200, null=True)
     case_sensitive = models.BooleanField(default=False)
-    credentialsttl = models.IntegerField(default=4)
+    credentialsttl = models.IntegerField(default=4, null=True)
     utf8 = models.BooleanField(default=False)
