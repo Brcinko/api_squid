@@ -51,3 +51,4 @@ class Authentication(models.Model):
     case_sensitive = models.BooleanField(default=False)
     credentialsttl = models.IntegerField(default=4, null=True)
     utf8 = models.BooleanField(default=False)
+    authenticationDB = models.ForeignKey(AuthenticationDB)
