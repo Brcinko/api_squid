@@ -29,3 +29,22 @@ class AclList(models.Model):
 #    acl_rules = models.ManyToManyField(AclRule, through='AccessPattern', through_fields=('acl_rules', 'acl_list'))
     acl_rules = models.ManyToManyField(AclRule)
 
+
+class Authentication(models.Model):
+    # user database settings
+    # explanation of this settings can be found at http://www.squid-cache.org/Versions/v3/3.2/manuals/basic_db_auth.html
+    username_column = models.CharField(default="username")
+    password_column = models.CharField(default="password")
+    database_name = models.CharField(default="squid")
+    user = models.CharField()  # database account
+    password = models.CharField()  # database account
+    table = models.CharField(default="users")
+    encryption = models.CharField(default="plaintext")  # password encryption in db, only plaintext or md5
+    # squid auth settings
+    # explanation of this settings can be found at http://www.squid-cache.org/Doc/config/auth_param/
+    realm = models.CharField()
+    children = models.IntegerField(default=5)
+    program = models.CharField(default="")
+    case_sensitive = models.BooleanField(default=False)
+    credentialsttl = models.IntegerField(default=4)
+    utf8 = models.BooleanField(default=False)
