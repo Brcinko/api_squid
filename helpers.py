@@ -91,8 +91,12 @@ def update_config_list():
     return unique_string
 
 
-def generate_file(flag_patterns, flag_rules, data_rules, data_patterns, inputfile):
+def update_authentication():
+
     pass
+
+
+def generate_file(flag_patterns, flag_rules, data_rules, data_patterns, inputfile):
     # Make tmp file with acl rules
     os.remove('/home/brcinko/squid_done.conf')
     with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:

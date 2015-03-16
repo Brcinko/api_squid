@@ -7,21 +7,25 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from api_squid.models import AclRule, AclList
-from api_squid.serializers import AclRuleSerializer, AclListSerializer
+from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB
+from api_squid.serializers import AclRuleSerializer, AclListSerializer, AuthenticationSerializer, AuthenticationDBSerializer
 from api_squid.helpers import update_config_rules, update_config_list, generate_file
 
 
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
 
-@csrf_exempt
+# @csrf_exempt
 @api_view(['GET', 'POST'])
 def acl_rules_list(request):
     """
     List of all acl-rules, or create a new acl-rule.
     acl_values have to be in this json form:
-
+        {"values":[
+           "192.168.0.0/24",
+           "127.0.0.0/24"
+        ]
+        }
     """
     if request.method == 'GET':
         rules = AclRule.objects.all()
@@ -110,6 +114,99 @@ def acl_list_detail(request, pk):
 
     elif request.method == 'DELETE':
         pattern.delete()
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def authentication(request):
+    """
+    List of all authentication settings
+    """
+    if request.method == 'GET':
+        auth = Authentication.objects.all()
+        serializer = AuthenticationSerializer(auth, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        # data = JSONParser().parse(request)
+        serializer = AuthenticationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def authentication_detail(request, pk):
+    """
+    Detailed view of one access pattern
+    """
+    try:
+        auth = Authentication.objects.get(pk=pk)
+    except Authentication.DoesNotExist:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AuthenticationSerializer(auth)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        # data = JSONParser().parse(request)
+        serializer = AuthenticationSerializer(auth, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        auth.delete()
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def authentication_db(request):
+    """
+    List of all database settings for authentication
+    """
+    if request.method == 'GET':
+        db = AuthenticationDB.objects.all()
+        serializer = AuthenticationDBSerializer(db, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        # data = JSONParser().parse(request)
+        serializer = AuthenticationDBSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def authentication_db_detail(request, pk):
+    """
+    Detailed view of specific record of authentification database settings
+    """
+    try:
+        db = AuthenticationDB.objects.get(pk=pk)
+    except AuthenticationDB.DoesNotExist:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = AuthenticationDBSerializer(db)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        # data = JSONParser().parse(request)
+        serializer = AuthenticationDBSerializer(db, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        db.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
 

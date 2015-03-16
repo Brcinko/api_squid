@@ -47,8 +47,9 @@ class Authentication(models.Model):
     # explanation of this settings can be found at http://www.squid-cache.org/Doc/config/auth_param/
     realm = models.CharField(max_length=200, default="Squid Authentication", null=True)
     children = models.IntegerField(default=5, null=True)
-    program = models.CharField(default="", max_length=200, null=True)
+    program = models.CharField(default="/usr/local/squid/libexec/squid_db_auth", max_length=200, null=True)
     case_sensitive = models.BooleanField(default=False)
     credentialsttl = models.IntegerField(default=4, null=True)
     utf8 = models.BooleanField(default=False)
+    enabled = models.BooleanField(default=True)
     authenticationDB = models.ForeignKey(AuthenticationDB)
