@@ -52,4 +52,4 @@ class Authentication(models.Model):
     credentialsttl = models.IntegerField(default=4, null=True)
     utf8 = models.BooleanField(default=False)
     enabled = models.BooleanField(default=True)
-    authenticationDB = models.ForeignKey(AuthenticationDB)
+    authenticationdb = models.ForeignKey(AuthenticationDB)

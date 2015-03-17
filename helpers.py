@@ -55,9 +55,6 @@ def update_config_rules():
         results = []
 
     return data
-    # f = open('squid.conf', w)
-    # f.write(update)
-    # f.close()
 
 
 def update_config_list():
@@ -91,36 +88,61 @@ def update_config_list():
     return unique_string
 
 
-def update_authentication():
+def update_authentication(auth, adb):
+    if auth.enabled is not False:
+        auth_string = "auth_param basic program " + auth.program + " \n"
+        auth_string += "auth_param basic children " + str(auth.children) + " \n"
+        auth_string += "auth_param basic realm " + auth.realm + " \n"
+        auth_string += "auth_param basic credentialsttl " + str(auth.credentialsttl) + " \n"
+        if auth.case_sensitive is True:
+            auth_string += "auth_param basic case_sensitive on" + " \n"
+        else:
+            auth_string += "auth_param basic case_sensitive off" + " \n"
+        if auth.utf8 is True:
+            auth_string += " auth_param basic utf8 on" + " \n"
+        else:
+            auth_string += " auth_param basic utf8 off" + " \n"
+        return auth_string
+    else:
+        return False
 
-    pass
 
+def generate_file(data_rules, data_patterns, auth, adb,  inputfile):
+    flag_patterns = "# INSERT PATTERNS #"
+    flag_rules = "# INSERT RULES #"
 
-def generate_file(flag_patterns, flag_rules, data_rules, data_patterns, inputfile):
+    auth_str = update_authentication(auth, adb)
     # Make tmp file with acl rules
-    os.remove('/home/brcinko/squid_done.conf')
+    # os.remove('/home/brcinko/squid_done.conf')
     with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:
         with open(inputfile, "rt") as fin:
             for line in fin:
                 fout.write(line.replace(flag_rules, data_rules))
-                # fout.write(line.replace(flag_patterns, data_patterns))
+
     # Add acl patterns to http_access
     with open("/home/brcinko/squid_done.conf.tmp2", "wt") as fout:
         with open("/home/brcinko/squid_done.conf.tmp1", "rt") as fin:
             for line in fin:
                 # fout.write(line.replace(flag_rules, data_rules))
                 fout.write(line.replace(flag_patterns, data_patterns))
+    if auth_str is not False:
+        with open("/home/brcinko/squid_done.conf.tmp3", "wt") as fout:
+            with open("/home/brcinko/squid_done.conf.tmp2", "rt") as fin:
+                for line in fin:
+                    # fout.write(line.replace(flag_rules, data_rules))
+                    fout.write(line.replace("# AUTH PARAM #", auth_str))
     # TODO add acl of authentification and configuration of auth
 
     os.remove("/home/brcinko/squid_done.conf.tmp1")
+    os.remove("/home/brcinko/squid_done.conf.tmp2")
 
 
 def main():
 
-    rules = update_config_rules()
-    patterns = update_config_list()
-    generate_file("# INSERT PATTERNS #", "# INSERT RULES #", rules, patterns, '/home/brcinko/squid.conf')
-
+    #rules = update_config_rules()
+    #patterns = update_config_list()
+    #generate_file( rules, patterns, auth , '/home/brcinko/squid.conf')
+    update_authentication(auth, "")
 
 if __name__ == "__main__":
     main()

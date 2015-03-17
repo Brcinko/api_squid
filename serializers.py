@@ -20,7 +20,7 @@ class AuthenticationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Authentication
-        fields = ('id', 'realm', 'children', 'program', 'case_sensitive', 'credentialsttl', 'utf8')
+        fields = ('id', 'realm', 'children', 'program', 'case_sensitive', 'credentialsttl', 'utf8', 'enabled')
 
 
 class AuthenticationDBSerializer(serializers.ModelSerializer):

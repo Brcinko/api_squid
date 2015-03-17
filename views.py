@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB
 from api_squid.serializers import AclRuleSerializer, AclListSerializer, AuthenticationSerializer, AuthenticationDBSerializer
-from api_squid.helpers import update_config_rules, update_config_list, generate_file
+from api_squid.helpers import update_config_rules, update_config_list, generate_file, update_authentication
 
 
 def index(request):
@@ -212,11 +212,14 @@ def authentication_db_detail(request, pk):
 
 def update_config(request):
     if request.method == 'GET':  # TODO method will be PUT?
+        auth = Authentication.objects.latest('id')
+        adb = AuthenticationDB.objects.get(pk=auth.id)
+        hahaha = update_authentication(auth, adb)
         rules = update_config_rules()
         patterns = update_config_list()
         # Update acl rules declarations
-        generate_file("# INSERT PATTERNS #", "# INSERT RULES #", rules, patterns, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse("Done.")
+        generate_file(rules, patterns, auth, adb, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse(hahaha)
 
 
 
