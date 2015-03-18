@@ -105,10 +105,22 @@ def generate_file(data_rules, data_patterns, auth, adb,  inputfile):
                 for line in fin:
                     # fout.write(line.replace(flag_rules, data_rules))
                     fout.write(line.replace("# AUTH PARAM #", auth_str))
-    # TODO add acl of authentification and configuration of auth
+        with open("/home/brcinko/squid_done.conf.tmp4", "wt") as fout:
+            with open("/home/brcinko/squid_done.conf.tmp3", "rt") as fin:
+                for line in fin:
+                    # fout.write(line.replace(flag_rules, data_rules))
+                    fout.write(line.replace("# AUTH ACL #", "acl api_auth proxy_auth REQUIRED"))
+        with open("/home/brcinko/squid_done.conf", "wt") as fout:
+            with open("/home/brcinko/squid_done.conf.tmp4", "rt") as fin:
+                for line in fin:
+                    # fout.write(line.replace(flag_rules, data_rules))
+                    fout.write(line.replace("# AUTH PATTERN #", "http_access allow db-auth"))
 
     os.remove("/home/brcinko/squid_done.conf.tmp1")
     os.remove("/home/brcinko/squid_done.conf.tmp2")
+    if auth_str is not False:
+        os.remove("/home/brcinko/squid_done.conf.tmp3")
+        os.remove("/home/brcinko/squid_done.conf.tmp4")
 
 
 def main():
