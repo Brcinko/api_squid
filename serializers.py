@@ -10,7 +10,12 @@ class AclRuleSerializer(serializers.ModelSerializer):
 
 
 class AclListSerializer(serializers.ModelSerializer):
-    acl_rules = AclRuleSerializer(many=True)
+    # acl_rules = AclRuleSerializer(many=True)
+    acl_rules = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='acl_name'
+     )
 
     class Meta:
         model = AclList
@@ -25,7 +30,7 @@ class AuthenticationDBSerializer(serializers.ModelSerializer):
 
 
 class AuthenticationSerializer(serializers.ModelSerializer):
-    authenticationdb = AuthenticationDBSerializer(many=False, read_only=True)
+    authenticationdb = AuthenticationDBSerializer(many=False)
 
     class Meta:
         model = Authentication

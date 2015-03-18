@@ -218,12 +218,13 @@ def update_config(request):
         adb = AuthenticationDB.objects.get(pk=auth.id)
         rules = AclRule.objects.all()
         patterns = AclList.objects.all()
+
         auth_str = update_authentication(auth, adb)
         rules_str = update_rules(rules)
         patterns_str = update_list(patterns)
         # Update acl rules declarations
-        # generate_file(rules, patterns, auth, adb, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse(patterns_str)
+        generate_file(rules_str, patterns_str, auth, auth_str, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse("Done.")
 
 
 
