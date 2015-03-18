@@ -57,6 +57,17 @@ def update_config_rules():
     return data
 
 
+def update_rules(rules):
+    data = ""
+    for rule in rules:
+        acl_string = ""
+        help_acl_string = "acl " + rule.acl_name + " " + rule.acl_type + " "
+        for value in rule.acl_values["values"]:
+            acl_string += help_acl_string + value + '\n'
+        data += acl_string
+    return data
+
+
 def update_config_list():
     cursor = database_connect()
     # TODO try catch block
@@ -88,8 +99,13 @@ def update_config_list():
     return unique_string
 
 
-def update_list():
-    pass
+def update_list(patterns):
+
+    for pattern in patterns:
+        if pattern.deny_value is True:
+            pattern_str = "http_access deny"
+        else:
+            pattern_str = "http_access allow"
 
 
 def update_authentication(auth, adb):
