@@ -30,7 +30,7 @@ class AuthenticationDBSerializer(serializers.ModelSerializer):
 
 
 class AuthenticationSerializer(serializers.ModelSerializer):
-    authenticationdb = AuthenticationDBSerializer(many=False)
+    authenticationdb = AuthenticationDBSerializer(many=False, read_only=True)
 
     class Meta:
         model = Authentication

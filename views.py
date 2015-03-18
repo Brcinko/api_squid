@@ -215,16 +215,15 @@ def authentication_db_detail(request, pk):
 def update_config(request):
     if request.method == 'GET':  # TODO method will be PUT?
         auth = Authentication.objects.latest('id')
-        adb = AuthenticationDB.objects.get(pk=auth.id)
         rules = AclRule.objects.all()
         patterns = AclList.objects.all()
 
-        auth_str = update_authentication(auth, adb)
+        auth_str = update_authentication(auth)
         rules_str = update_rules(rules)
         patterns_str = update_list(patterns)
         # Update acl rules declarations
-        generate_file(rules_str, patterns_str, auth, auth_str, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse("Done.")
+        # generate_file(rules_str, patterns_str, auth, auth_str, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse(auth_str)
 
 
 

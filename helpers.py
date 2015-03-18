@@ -40,7 +40,6 @@ def update_rules(rules):
 def update_list(patterns):
     data = ""
     for pattern in patterns:
-        pattern_str = ""
         if pattern.deny_value is True:
             pattern_str = "http_access deny "
         else:
@@ -53,9 +52,19 @@ def update_list(patterns):
     return data
 
 
-def update_authentication(auth, adb):
+def get_db_string(db):
+    db_string = '  --dsn "DSN:mysql:host=localhost;database=' + db.database_name + '" '
+    db_string += '--user ' + db.user + ' --password ' + db.password + ' --table'  + db.table
+    db_string += ' --usercol ' + db.username_column + ' --passwdcol ' + db.password_column + ' --' + db.encryption
+    db_string += "\n"
+
+    return db_string
+
+
+def update_authentication(auth):
+    db_string = get_db_string(auth.authenticationdb)
     if auth.enabled is not False:
-        auth_string = "auth_param basic program " + auth.program + " \n"
+        auth_string = "auth_param basic program " + auth.program + db_string
         auth_string += "auth_param basic children " + str(auth.children) + " \n"
         auth_string += "auth_param basic realm " + auth.realm + " \n"
         auth_string += "auth_param basic credentialsttl " + str(auth.credentialsttl) + " \n"
@@ -76,7 +85,7 @@ def generate_file(data_rules, data_patterns, auth, adb,  inputfile):
     flag_patterns = "# INSERT PATTERNS #"
     flag_rules = "# INSERT RULES #"
 
-    auth_str = update_authentication(auth, adb)
+    auth_str = update_authentication(auth)
     # Make tmp file with acl rules
     # os.remove('/home/brcinko/squid_done.conf')
     with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:
