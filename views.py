@@ -67,7 +67,7 @@ def acl_rule_detail(request, pk):
 
     elif request.method == 'DELETE':
         rule.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @csrf_exempt
@@ -99,7 +99,7 @@ def acl_list_detail(request, pk):
     try:
         pattern = AclList.objects.get(pk=pk)
     except AclRule.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = AclRuleSerializer(pattern)
@@ -115,7 +115,7 @@ def acl_list_detail(request, pk):
 
     elif request.method == 'DELETE':
         pattern.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -146,7 +146,7 @@ def authentication_detail(request, pk):
     try:
         auth = Authentication.objects.get(pk=pk)
     except Authentication.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = AuthenticationSerializer(auth)
@@ -162,7 +162,7 @@ def authentication_detail(request, pk):
 
     elif request.method == 'DELETE':
         auth.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @csrf_exempt
@@ -192,7 +192,7 @@ def authentication_db_detail(request, pk):
     try:
         db = AuthenticationDB.objects.get(pk=pk)
     except AuthenticationDB.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = AuthenticationDBSerializer(db)
@@ -208,7 +208,7 @@ def authentication_db_detail(request, pk):
 
     elif request.method == 'DELETE':
         db.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @csrf_exempt
 @api_view(['GET', 'PUT'])

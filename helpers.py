@@ -121,6 +121,8 @@ def generate_file(data_rules, data_patterns, auth, adb,  inputfile):
     if auth_str is not False:
         os.remove("/home/brcinko/squid_done.conf.tmp3")
         os.remove("/home/brcinko/squid_done.conf.tmp4")
+    else:
+        os.rename("/home/brcinko/squid_done.conf.tmp2", "/home/brcinko/squid_done.conf")
 
 
 def main():
@@ -128,7 +130,7 @@ def main():
     #rules = update_config_rules()
     #patterns = update_config_list()
     #generate_file( rules, patterns, auth , '/home/brcinko/squid.conf')
-    update_authentication(auth, "")
+    update_authentication(auth)
 
 if __name__ == "__main__":
     main()
