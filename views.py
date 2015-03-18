@@ -15,7 +15,8 @@ from api_squid.helpers import update_config_rules, update_config_list, generate_
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
 
-# @csrf_exempt
+
+@csrf_exempt
 @api_view(['GET', 'POST'])
 def acl_rules_list(request):
     """
@@ -209,17 +210,18 @@ def authentication_db_detail(request, pk):
         db.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
-
+@csrf_exempt
+@api_view(['GET', 'PUT'])
 def update_config(request):
     if request.method == 'GET':  # TODO method will be PUT?
         auth = Authentication.objects.latest('id')
         adb = AuthenticationDB.objects.get(pk=auth.id)
         hahaha = update_authentication(auth, adb)
         rules = update_config_rules()
-        patterns = update_config_list()
+        patterns = AclList.objects.all()
         # Update acl rules declarations
-        generate_file(rules, patterns, auth, adb, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse(hahaha)
+        # generate_file(rules, patterns, auth, adb, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
+        return HttpResponse()
 
 
 

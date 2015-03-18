@@ -88,6 +88,10 @@ def update_config_list():
     return unique_string
 
 
+def update_list():
+    pass
+
+
 def update_authentication(auth, adb):
     if auth.enabled is not False:
         auth_string = "auth_param basic program " + auth.program + " \n"
@@ -101,7 +105,7 @@ def update_authentication(auth, adb):
         if auth.utf8 is True:
             auth_string += " auth_param basic utf8 on" + " \n"
         else:
-            auth_string += " auth_param basic utf8 off" + " \n"
+            auth_string += "auth_param basic utf8 off" + " \n"
         return auth_string
     else:
         return False
