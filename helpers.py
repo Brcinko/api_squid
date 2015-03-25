@@ -115,8 +115,8 @@ def generate_file(data_rules, data_patterns, data_auth, inputfile):
                     fout.write(line.replace(flag_auth_pattern, "http_access allow db-auth"))
 
     # Remove temporary files
-    #os.remove(SQUID_TMP1)
-    #os.remove(SQUID_TMP2)
+    os.remove(SQUID_TMP1)
+    os.remove(SQUID_TMP2)
     if auth_str is not False:
         os.remove(SQUID_TMP3)
         os.remove(SQUID_TMP4)
