@@ -87,42 +87,41 @@ def generate_file(data_rules, data_patterns, data_auth, inputfile):
     rules_str = update_rules(data_rules)
     patterns_str = update_list(data_patterns)
 
-    flag_patterns = "# INSERT PATTERNS #"
-    flag_rules = "# INSERT RULES #"
 
     # Make tmp file with acl rules
     # os.remove('/home/brcinko/squid_done.conf')
-    with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:
+    with open(SQUID_TMP1, "wt") as fout:
         with open(inputfile, "rt") as fin:
             for line in fin:
                 fout.write(line.replace(flag_rules, rules_str))
 
     # Add acl patterns to http_access
-    with open("/home/brcinko/squid_done.conf.tmp2", "wt") as fout:
-        with open("/home/brcinko/squid_done.conf.tmp1", "rt") as fin:
+    with open(SQUID_TMP2, "wt") as fout:
+        with open(SQUID_TMP1, "rt") as fin:
             for line in fin:
                 fout.write(line.replace(flag_patterns, patterns_str))
     if auth_str is not False:
-        with open("/home/brcinko/squid_done.conf.tmp3", "wt") as fout:
-            with open("/home/brcinko/squid_done.conf.tmp2", "rt") as fin:
+        with open(SQUID_TMP3, "wt") as fout:
+            with open(SQUID_TMP2, "rt") as fin:
                 for line in fin:
-                    fout.write(line.replace("# AUTH PARAM #", auth_str))
-        with open("/home/brcinko/squid_done.conf.tmp4", "wt") as fout:
-            with open("/home/brcinko/squid_done.conf.tmp3", "rt") as fin:
+                    fout.write(line.replace(flag_auth, auth_str))
+        with open(SQUID_TMP4, "wt") as fout:
+            with open(SQUID_TMP3, "rt") as fin:
                 for line in fin:
-                    fout.write(line.replace("# AUTH ACL #", "acl api_auth proxy_auth REQUIRED"))
-        with open("/home/brcinko/squid_done.conf", "wt") as fout:
-            with open("/home/brcinko/squid_done.conf.tmp4", "rt") as fin:
+                    fout.write(line.replace(flag_auth_acl, "acl api_auth proxy_auth REQUIRED"))
+        with open(SQUID_CONF_FILE, "wt") as fout:
+            with open(SQUID_TMP4, "rt") as fin:
                 for line in fin:
-                    fout.write(line.replace("# AUTH PATTERN #", "http_access allow db-auth"))
+                    fout.write(line.replace(flag_auth_pattern, "http_access allow db-auth"))
 
-    os.remove("/home/brcinko/squid_done.conf.tmp1")
-    os.remove("/home/brcinko/squid_done.conf.tmp2")
+    # Remove temporary files
+    #os.remove(SQUID_TMP1)
+    #os.remove(SQUID_TMP2)
     if auth_str is not False:
-        os.remove("/home/brcinko/squid_done.conf.tmp3")
-        os.remove("/home/brcinko/squid_done.conf.tmp4")
+        os.remove(SQUID_TMP3)
+        os.remove(SQUID_TMP4)
     else:
-        os.rename("/home/brcinko/squid_done.conf.tmp2", "/home/brcinko/squid_done.conf")
+        os.rename(SQUID_TMP2, SQUID_CONF_FILE)
 
 
 def main():

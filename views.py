@@ -215,13 +215,13 @@ def authentication_db_detail(request, pk):
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def update_config(request):
-    if request.method == 'GET': # TODO method will be PUT?
+    if request.method == 'GET':  # TODO method will be PUT?
         auth = Authentication.objects.latest('id')
         rules = AclRule.objects.all()
         patterns = AclList.objects.all()
 
         # # Update acl rules declarations
-        generate_file(rules, patterns, auth, SQUID_CONF_FILE)  # TODO squid.conf in settings.py
+        generate_file(rules, patterns, auth, SQUID_ORIGIN_FILE)
         return Response("Done.")
         # helps = AclRule.objects.all()
         # return Response(helps[1].acl_values["values"])
