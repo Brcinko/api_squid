@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB
 from api_squid.serializers import AclRuleSerializer, AclListSerializer, AuthenticationSerializer, AuthenticationDBSerializer
 from api_squid.helpers import update_rules, update_list, generate_file, update_authentication
-
+from settings import *
 
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
@@ -117,6 +117,7 @@ def acl_list_detail(request, pk):
         pattern.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def authentication(request):
@@ -210,20 +211,18 @@ def authentication_db_detail(request, pk):
         db.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def update_config(request):
-    if request.method == 'GET':  # TODO method will be PUT?
+    if request.method == 'GET': # TODO method will be PUT?
         auth = Authentication.objects.latest('id')
         rules = AclRule.objects.all()
         patterns = AclList.objects.all()
 
-        auth_str = update_authentication(auth)
-        rules_str = update_rules(rules)
-        patterns_str = update_list(patterns)
-        # Update acl rules declarations
-        generate_file(rules_str, patterns_str, auth, auth_str, '/home/brcinko/squid.conf')  # TODO squid.conf in settings.py
-        return HttpResponse("Done.")
-
-
+        # # Update acl rules declarations
+        generate_file(rules, patterns, auth, SQUID_CONF_FILE)  # TODO squid.conf in settings.py
+        return Response("Done.")
+        # helps = AclRule.objects.all()
+        # return Response(helps[1].acl_values["values"])
 

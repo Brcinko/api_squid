@@ -5,6 +5,7 @@ import psycopg2
 import psycopg2.extras
 import json
 import fileinput
+from settings import *
 
 """
 This file contains method to update a reconfigure squid proxy server
@@ -81,39 +82,38 @@ def update_authentication(auth):
         return False
 
 
-def generate_file(data_rules, data_patterns, auth, adb,  inputfile):
+def generate_file(data_rules, data_patterns, data_auth, inputfile):
+    auth_str = update_authentication(data_auth)
+    rules_str = update_rules(data_rules)
+    patterns_str = update_list(data_patterns)
+
     flag_patterns = "# INSERT PATTERNS #"
     flag_rules = "# INSERT RULES #"
 
-    auth_str = update_authentication(auth)
     # Make tmp file with acl rules
     # os.remove('/home/brcinko/squid_done.conf')
     with open("/home/brcinko/squid_done.conf.tmp1", "wt") as fout:
         with open(inputfile, "rt") as fin:
             for line in fin:
-                fout.write(line.replace(flag_rules, data_rules))
+                fout.write(line.replace(flag_rules, rules_str))
 
     # Add acl patterns to http_access
     with open("/home/brcinko/squid_done.conf.tmp2", "wt") as fout:
         with open("/home/brcinko/squid_done.conf.tmp1", "rt") as fin:
             for line in fin:
-                # fout.write(line.replace(flag_rules, data_rules))
-                fout.write(line.replace(flag_patterns, data_patterns))
+                fout.write(line.replace(flag_patterns, patterns_str))
     if auth_str is not False:
         with open("/home/brcinko/squid_done.conf.tmp3", "wt") as fout:
             with open("/home/brcinko/squid_done.conf.tmp2", "rt") as fin:
                 for line in fin:
-                    # fout.write(line.replace(flag_rules, data_rules))
                     fout.write(line.replace("# AUTH PARAM #", auth_str))
         with open("/home/brcinko/squid_done.conf.tmp4", "wt") as fout:
             with open("/home/brcinko/squid_done.conf.tmp3", "rt") as fin:
                 for line in fin:
-                    # fout.write(line.replace(flag_rules, data_rules))
                     fout.write(line.replace("# AUTH ACL #", "acl api_auth proxy_auth REQUIRED"))
         with open("/home/brcinko/squid_done.conf", "wt") as fout:
             with open("/home/brcinko/squid_done.conf.tmp4", "rt") as fin:
                 for line in fin:
-                    # fout.write(line.replace(flag_rules, data_rules))
                     fout.write(line.replace("# AUTH PATTERN #", "http_access allow db-auth"))
 
     os.remove("/home/brcinko/squid_done.conf.tmp1")
