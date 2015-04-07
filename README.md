@@ -13,3 +13,9 @@ api-squid offers creating, updating, or deleting configuration directives about:
   - user authentication with local mysql database
   - Access rules for web communication
 
+TODO list
+---------
+
+- new model: version of acl_config file
+- include api_core
+- remote MySQL user database
