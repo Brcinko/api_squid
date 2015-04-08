@@ -22,6 +22,19 @@ class AclListSerializer(serializers.ModelSerializer):
         fields = ('id', 'acl_rules', 'deny_value', 'list_type')
 
 
+class AclVersionSerializer(serializers.ModelSerializer):
+    # acl_rules = AclRuleSerializer(many=True)
+    acl_list = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='id'
+     )
+
+    class Meta:
+        model = AclList
+        fields = 'version'
+
+
 class AuthenticationDBSerializer(serializers.ModelSerializer):
 
     class Meta:

@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB
-from api_squid.serializers import AclRuleSerializer, AclListSerializer, AuthenticationSerializer, AuthenticationDBSerializer
+from api_squid.serializers import AclRuleSerializer, AclListSerializer, AuthenticationSerializer, AuthenticationDBSerializer, AclVersionSerializer
 from api_squid.helpers import update_rules, update_list, generate_file, update_authentication
 from settings import *
 
