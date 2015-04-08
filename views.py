@@ -229,12 +229,11 @@ def update_config(request):
         ver = {}
         vers = {'acl_lists': data}
         # return Response(vers)
-        serializer = AclVersionSerializer(data=vers)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # return Response("Done.")
-        # helps = AclRule.objects.all()
-        # return Response(helps[1].acl_values["values"])
+
+        version_serializer = AclVersionSerializer(data=vers)
+        if version_serializer.is_valid():
+            version_serializer.save()
+            return Response(version_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(version_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
