@@ -12,6 +12,7 @@ from api_squid.serializers import AclRuleSerializer, AclListSerializer, Authenti
 from api_squid.helpers import update_rules, update_list, generate_file, update_authentication
 from settings import *
 
+
 def index(request):
     return HttpResponse("This is a index web page of squid API.")
 

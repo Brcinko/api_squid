@@ -55,7 +55,7 @@ def update_list(patterns):
 
 
 def get_db_string(db):
-    db_string = '  --dsn "DSN:mysql:host=localhost;database=' + db.database_name + '" '
+    db_string = '  --dsn "DSN:mysql:' + db.database_name + '" '
     db_string += '--user ' + db.user + ' --password ' + db.password + ' --table'  + db.table
     db_string += ' --usercol ' + db.username_column + ' --passwdcol ' + db.password_column + ' --' + db.encryption
     db_string += "\n"
