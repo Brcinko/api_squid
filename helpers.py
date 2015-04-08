@@ -5,6 +5,7 @@ import psycopg2
 import psycopg2.extras
 import json
 import fileinput
+import string
 from settings import *
 
 """
@@ -87,49 +88,26 @@ def generate_file(data_rules, data_patterns, data_auth, inputfile):
     rules_str = update_rules(data_rules)
     patterns_str = update_list(data_patterns)
 
+    with open(inputfile, "r") as myfile:
+        file_string = myfile.read()
 
-    # Make tmp file with acl rules
-    # os.remove('/home/brcinko/squid_done.conf')
-    with open(SQUID_TMP1, "wt") as fout:
-        with open(inputfile, "rt") as fin:
-            for line in fin:
-                fout.write(line.replace(flag_rules, rules_str))
-
-    # Add acl patterns to http_access
-    with open(SQUID_TMP2, "wt") as fout:
-        with open(SQUID_TMP1, "rt") as fin:
-            for line in fin:
-                fout.write(line.replace(flag_patterns, patterns_str))
+    file_string = file_string.replace(flag_rules, rules_str)
+    file_string = file_string.replace(flag_patterns, patterns_str)
     if auth_str is not False:
-        with open(SQUID_TMP3, "wt") as fout:
-            with open(SQUID_TMP2, "rt") as fin:
-                for line in fin:
-                    fout.write(line.replace(flag_auth, auth_str))
-        with open(SQUID_TMP4, "wt") as fout:
-            with open(SQUID_TMP3, "rt") as fin:
-                for line in fin:
-                    fout.write(line.replace(flag_auth_acl, "acl api_auth proxy_auth REQUIRED"))
-        with open(SQUID_CONF_FILE, "wt") as fout:
-            with open(SQUID_TMP4, "rt") as fin:
-                for line in fin:
-                    fout.write(line.replace(flag_auth_pattern, "http_access allow db-auth"))
+        file_string = file_string.replace(flag_auth, auth_str)
+        file_string = file_string.replace(flag_auth_acl, "acl api_auth proxy_auth REQUIRED")
+        file_string = file_string.replace(flag_auth_pattern, "http_access allow db-auth")
 
-    # Remove temporary files
-    os.remove(SQUID_TMP1)
-    os.remove(SQUID_TMP2)
-    if auth_str is not False:
-        os.remove(SQUID_TMP3)
-        os.remove(SQUID_TMP4)
-    else:
-        os.rename(SQUID_TMP2, SQUID_CONF_FILE)
+    with open(SQUID_CONF_FILE, "w") as text_file:
+        text_file.write(file_string)
 
 
 def main():
-
+    pass
     #rules = update_config_rules()
     #patterns = update_config_list()
     #generate_file( rules, patterns, auth , '/home/brcinko/squid.conf')
-    update_authentication(auth)
+    # update_authentication(auth)
 
 if __name__ == "__main__":
     main()
