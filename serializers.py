@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB
+from api_squid.models import AclRule, AclList, Authentication, AuthenticationDB, AclVersion
 
 
 class AclRuleSerializer(serializers.ModelSerializer):
@@ -24,15 +24,15 @@ class AclListSerializer(serializers.ModelSerializer):
 
 class AclVersionSerializer(serializers.ModelSerializer):
     # acl_rules = AclRuleSerializer(many=True)
-    acl_list = serializers.SlugRelatedField(
+    acl_lists = serializers.PrimaryKeyRelatedField(
         many=True,
-        read_only=True,
-        slug_field='id'
-     )
+        read_only=False,
+        queryset=AclList.objects.all()
+    )
 
     class Meta:
-        model = AclList
-        fields = 'version'
+        model = AclVersion
+        fields = ('acl_lists',)
 
 
 class AuthenticationDBSerializer(serializers.ModelSerializer):

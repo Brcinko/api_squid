@@ -29,8 +29,9 @@ class AclList(models.Model):
 
 
 class AclVersion(models.Model):
-    acl_list = models.ManyToManyField(AclList)
-    version = models.IntegerField(null=False, primary_key=True)
+#    ver = models.IntegerField(primary_key=True)
+    acl_lists = models.ManyToManyField(AclList)
+    ver = models.AutoField(primary_key=True)
 
 
 class AuthenticationDB(models.Model):
