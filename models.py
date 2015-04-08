@@ -28,6 +28,11 @@ class AclList(models.Model):
     acl_rules = models.ManyToManyField(AclRule)
 
 
+class AclVersion(models.Model):
+    acl_list = models.ManyToManyField(AclList)
+    version = models.IntegerField(null=False, primary_key=True)
+
+
 class AuthenticationDB(models.Model):
     """
         DB model of "Database of users" for squid_db_auth helper
@@ -36,7 +41,7 @@ class AuthenticationDB(models.Model):
         Warning:
             Default settings of database_name are set on localhost database with name "squid". If you want use
             another database database_name have to be in this form:
-            "host=myhost_or_ip;port=port_number;database=database_name"
+            "host=my_host_or_ip;port=port_number;database=database_name"
     """
     username_column = models.CharField(default="username", max_length=200, null=True)
     password_column = models.CharField(default="password", max_length=200, null=True)
