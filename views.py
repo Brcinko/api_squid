@@ -56,9 +56,9 @@ def acl_rule_detail(request, pk):
     Detail of specific acl-rule
     Allowed methods:
         GET    - response to this method return rest_framework Response with serialized data of specific acl-rule
-        DELETE - response delete specific acl-rule from DB and return rest_framewor Response with code 204
+        DELETE - response delete specific acl-rule from DB and return rest_framework Response with code 204
         PUT    - response to this method change specific acl-rule in DB and 
-                 return rest_framewrok Response with serialized data of specific acl-rule
+                 return rest_framework Response with serialized data of specific acl-rule
     Params: request - requested data
             pk - ID of specific record
     For more info about requested data try OPTIONS on yourdomain.com/api_squid/acl_rules/
