@@ -107,7 +107,7 @@ def acl_list(request):
 
     elif request.method == 'POST':
         # data = JSONParser().parse(request)
-        serializer = AclRuleSerializer(data=request.data)
+        serializer = AclListSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -306,7 +306,8 @@ def update_config(request):
         patterns = AclList.objects.all()
 
         # # Update acl rules declarations
-        generate_file(rules, patterns, auth, SQUID_ORIGIN_FILE)
+        s = generate_file(rules, patterns, auth, SQUID_ORIGIN_FILE)
+        # return Response(s)
         data = []
         for p in patterns:
             data.append(p.id)

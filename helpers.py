@@ -35,9 +35,10 @@ def update_rules(rules):
         acl_string = ""
         help_acl_string = "acl " + rule.acl_name + " " + rule.acl_type + " "
         if isinstance(rule.acl_values, basestring):
-            # return str(i)
+            j = str(i) + "HAHAHA"
+            # return str(j)
             values = json.loads(rule.acl_values)
-            for value in values:
+            for value in values["values"]:
                 acl_string += help_acl_string + value + '\n'
         else:
 
@@ -95,7 +96,7 @@ def update_authentication(auth):
 def generate_file(data_rules, data_patterns, data_auth, inputfile):
     auth_str = update_authentication(data_auth)
     rules_str = update_rules(data_rules)
-    return rules_str
+    # return rules_str
     patterns_str = update_list(data_patterns)
 
     with open(inputfile, "r") as myfile:

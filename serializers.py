@@ -11,11 +11,12 @@ class AclRuleSerializer(serializers.ModelSerializer):
 
 class AclListSerializer(serializers.ModelSerializer):
     # acl_rules = AclRuleSerializer(many=True)
-    acl_rules = serializers.SlugRelatedField(
+    acl_rules = serializers.PrimaryKeyRelatedField(
         many=True,
-        read_only=True,
-        slug_field='acl_name'
-     )
+        read_only=True
+        # slug_field='id'
+        # queryset=AclRule.objects.get(pk=acl_rules)
+    )
 
     class Meta:
         model = AclList

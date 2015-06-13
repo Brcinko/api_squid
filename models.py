@@ -16,8 +16,8 @@ from jsonfield import JSONField
 
 class AclRule(models.Model):
     acl_type = models.CharField(max_length=200, default='foobar')
-    acl_values = JSONField(default='NULL')
-    acl_name = models.CharField(max_length=200, default='foobar')
+    acl_values = models.CharField(max_length=10000, default='NULL')
+    acl_name = models.CharField(max_length=200, default='foobar', unique=True)
 
 
 class AclList(models.Model):
